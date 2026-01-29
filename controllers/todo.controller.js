@@ -1,28 +1,86 @@
-const Todo=require ("../models/Todo");
+const Todo = require("../models/Todo");
 
-export const createTodo=async(req,res)=>{
-    const {title}=req.body;
-    const todo=new Todo.create({title});
-    res.status(201).json(todo);
+// CREATE TODO
+const createTodo = async (req, res) => {
+  try {
+    const { title, boardId } = req.body;
+
+    if (!title || !boardId) {
+      return res.status(400).json({ message: "Title and boardId are required" });
+    }
+
+    const todo = await Todo.create({
+      title,
+      board: boardId,
+      user: req.user.id,
+    });
+
+    res.status(201).json({ success: true, data: todo });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
-export const getTodos=async(req,res)=>{
-    const todos=await Todo.find().sort({createdAt:-1});
-    res.json(todos);
-}
+// GET TODOS BY BOARD
+const getTodos = async (req, res) => {
+  try {
+    const { boardId } = req.params;
 
-export const updateTodo=async(req,res)=>{
-    const {id}=req.params;
-    const todo=await Todo.findByIdAndUpdate(
-        id,req.body,
-        {new:true}
+    const todos = await Todo.find({
+      board: boardId,
+      user: req.user.id,
+    }).sort({ createdAt: -1 });
+
+    res.json({ success: true, data: todos });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// UPDATE TODO
+const updateTodo = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const todo = await Todo.findOneAndUpdate(
+      { _id: id, user: req.user.id },
+      req.body,
+      { new: true }
     );
-    res.json(todo);
+
+    if (!todo) {
+      return res.status(404).json({ message: "Todo not found" });
+    }
+
+    res.json({ success: true, data: todo });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
-export const deleteTodo=async(req,res)=>{
-    const {id}=req.params;
-    await Todo.findByIdAndDelete(id);
-    res.json({succes:true,
-                data});
+// DELETE TODO
+const deleteTodo = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const todo = await Todo.findOneAndDelete({
+      _id: id,
+      user: req.user.id,
+    });
+
+    if (!todo) {
+      return res.status(404).json({ message: "Todo not found" });
+    }
+
+    res.json({ success: true, message: "Todo deleted" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = {
+  createTodo,
+  getTodos,
+  updateTodo,
+  deleteTodo,
 };
