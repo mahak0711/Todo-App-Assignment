@@ -12,7 +12,7 @@ const createTodo = async (req, res) => {
     const todo = await Todo.create({
       title,
       board: boardId,
-      user: req.user.id,
+      user: req.userId,
     });
 
     res.status(201).json({ success: true, data: todo });
@@ -28,7 +28,7 @@ const getTodos = async (req, res) => {
 
     const todos = await Todo.find({
       board: boardId,
-      user: req.user.id,
+      user: req.userId,
     }).sort({ createdAt: -1 });
 
     res.json({ success: true, data: todos });
@@ -43,7 +43,7 @@ const updateTodo = async (req, res) => {
     const { id } = req.params;
 
     const todo = await Todo.findOneAndUpdate(
-      { _id: id, user: req.user.id },
+      { _id: id, user: req.userId },
       req.body,
       { new: true }
     );
@@ -65,7 +65,7 @@ const deleteTodo = async (req, res) => {
 
     const todo = await Todo.findOneAndDelete({
       _id: id,
-      user: req.user.id,
+      user: req.userId,
     });
 
     if (!todo) {

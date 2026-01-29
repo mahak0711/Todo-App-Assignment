@@ -4,8 +4,9 @@ const createBoard=async(req,res)=>{
 try{
     const board=await Board.create({
         title:req.body.title,
-        user:req.user.id
+        user:req.userId
     });
+    
     res.status(201).json(board);
 }
 catch(err){
