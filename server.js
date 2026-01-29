@@ -16,7 +16,7 @@ app.use(express.json());
 
 app.use("api/auth",authRoute);
 app.use("api/board",boardRoute);
-// app.use("api/todo",todoRoute);
+app.use("api/todo",todoRoute);
 
 app.get("/",(req,res)=>{
     res.send("API is running");
