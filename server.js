@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("api/auth",authRoute);
-// app.use("api/board",boardRoute);
+app.use("api/board",boardRoute);
 // app.use("api/todo",todoRoute);
 
 app.get("/",(req,res)=>{
