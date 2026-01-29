@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 const todosSchema=new mongoose.Schema({
     title:{
         type:String,
@@ -9,6 +9,16 @@ const todosSchema=new mongoose.Schema({
         type:Boolean,
         default:false,
     },
+    board:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Board",
+        required:true,
+    },
+    user:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
+        required:true,
+    }
     },
 { timestamps:true }
 );
