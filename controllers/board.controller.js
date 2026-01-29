@@ -49,4 +49,5 @@ catch(err){
     });
 }
 };
+module.exports={createBoard,getBoards,deleteBoard};
 
