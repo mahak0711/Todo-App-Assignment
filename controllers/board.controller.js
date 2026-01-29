@@ -4,14 +4,14 @@ const createBoard=async(req,res)=>{
 try{
     const board=await Board.create({
         title:req.body.title,
-        user:req.userId
+        user:req.user.id
     });
     res.status(201).json(board);
 }
 catch(err){
     res.status(500).json({
-        succes:true,
-                data
+      
+        message:err.message
     });
 }
 }
@@ -23,8 +23,8 @@ const getBoards=async(req,res)=>{
     }
     catch(err){
         res.status(500).json({
-            succes:true,
-                data
+        
+            message:err.message
         })
     }
 }
@@ -37,20 +37,18 @@ const deleteBoard=async(req,res)=>{
     });
     if(!board){
         return res.status(404).json({
-            succes:true,
-                data
+            
+            message:"Board not found"
         });
     }
     await board.deleteOne();
     res.json({
-        succes:true,
-                data
+        message:"Board deleted successfully"
     });
 }
 catch(err){
     res.status(500).json({
-        succes:true,
-                data
+        message:err.message
     });
 }
 };
