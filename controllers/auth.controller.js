@@ -7,7 +7,7 @@ const register=async(req,res)=>{
 
     try{
         const existUser=await user.findOne({email});
-        if(existuser){
+        if(existUser){
             return res.status(400).json({
                 succes:true,
                 data
@@ -18,7 +18,7 @@ const register=async(req,res)=>{
 
         const user= await user.create({
             email,
-            password:hashedPassword
+            password:hashPassword
         });
         return res.status(201).json({
             succes:true,
