@@ -2,47 +2,46 @@ const User=require("../models/User");
 const bcrypt=require("bcryptjs");
 const jwt=require("jsonwebtoken");
 
-const register=async(req,res)=>{
-    const {email,password}=req.body;
+const register = async (req, res) => {
+    const { email, password } = req.body;
 
-    try{
-        const existUser=await user.findOne({email});
-        if(existUser){
-            return res.status(400).json({
-                succes:true,
-                data
-            });
-
+    try {
+        const existUser = await User.findOne({ email });
+        if (existUser) {
+            return res.status(400).json({ message: "User already exists" });
         }
-        const hashPassword=await bcrypt.hash(password,10);
 
-        const user= await user.create({
-            email,
-            password:hashPassword
-        });
+        const hashPassword = await bcrypt.hash(password, 10);
+
+        const newUser = await User.create({ email, password: hashPassword });
+
+        // Optionally generate token on registration
+        const token = jwt.sign(
+            { userId: newUser._id },
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" }
+        );
+
         return res.status(201).json({
-            succes:true,
-                data
+            message: "User registered successfully",
+            user: { id: newUser._id, email: newUser.email },
+            token
         });
-
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
     }
-    catch(error){
-        res.status(500).json({
-           succes:true,
-                data
-        });
-}
 };
+
 
 const login=async(req,res)=>{
     const{email,password}=req.body;
 
     try{
-        const user=await User.findOne({email});
+        const user = await User.findOne({ email }).select("+password");
+
         if(!user){
             return res.status(400).json({
-               succes:true,
-                data
+                message:"Invalid Credentials"
             });
 
         }
@@ -51,11 +50,10 @@ const login=async(req,res)=>{
 
         if(!isMatch){
             return res.status(400).json({
-                succes:true,
-                data
+                message:"Invalid Credentials"
             });
         }
-
+        
         const token=jwt.sign(
             {userId:user._id},
             process.env.JWT_SECRET,
@@ -64,8 +62,9 @@ const login=async(req,res)=>{
         res.json({token});
     }
     catch(error){
-        res.status(500).json({succes:true,
-                data});
+        res.status(500).json({
+            message:error.message
+        });
     }
 }
 module.exports={register,login};

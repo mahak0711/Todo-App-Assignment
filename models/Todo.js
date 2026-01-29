@@ -22,5 +22,4 @@ const todosSchema=new mongoose.Schema({
     },
 { timestamps:true }
 );
-
-export default mongoose.model("Todo",todosSchema);
+module.exports=mongoose.model("Todo",todosSchema);
