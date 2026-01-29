@@ -10,7 +10,8 @@ try{
 }
 catch(err){
     res.status(500).json({
-        message:"Failed to create board"
+        succes:true,
+                data
     });
 }
 }
@@ -22,7 +23,8 @@ const getBoards=async(req,res)=>{
     }
     catch(err){
         res.status(500).json({
-            message:"Failed to fetch boards"
+            succes:true,
+                data
         })
     }
 }
@@ -35,17 +37,20 @@ const deleteBoard=async(req,res)=>{
     });
     if(!board){
         return res.status(404).json({
-            message:"Board not found"
+            succes:true,
+                data
         });
     }
     await board.deleteOne();
     res.json({
-        message:"Board deleted successfully"
+        succes:true,
+                data
     });
 }
 catch(err){
     res.status(500).json({
-        message:"Failed to delete board"
+        succes:true,
+                data
     });
 }
 };

@@ -23,5 +23,6 @@ export const updateTodo=async(req,res)=>{
 export const deleteTodo=async(req,res)=>{
     const {id}=req.params;
     await Todo.findByIdAndDelete(id);
-    res.json({message:"Todo deleted successfully"});
+    res.json({succes:true,
+                data});
 };

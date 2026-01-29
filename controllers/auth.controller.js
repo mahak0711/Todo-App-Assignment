@@ -9,7 +9,8 @@ const register=async(req,res)=>{
         const existUser=await user.findOne({email});
         if(existuser){
             return res.status(400).json({
-                message:"User already exists"
+                succes:true,
+                data
             });
 
         }
@@ -20,13 +21,15 @@ const register=async(req,res)=>{
             password:hashedPassword
         });
         return res.status(201).json({
-            message:"User registered successfully"
+            succes:true,
+                data
         });
 
     }
     catch(error){
         res.status(500).json({
-            messaage:"Server Error"
+           succes:true,
+                data
         });
 }
 };
@@ -38,7 +41,8 @@ const login=async(req,res)=>{
         const user=await User.findOne({email});
         if(!user){
             return res.status(400).json({
-                mesage:"Invalid Credentials"
+               succes:true,
+                data
             });
 
         }
@@ -47,7 +51,8 @@ const login=async(req,res)=>{
 
         if(!isMatch){
             return res.status(400).json({
-                message:"Incorrect Password"
+                succes:true,
+                data
             });
         }
 
@@ -59,7 +64,8 @@ const login=async(req,res)=>{
         res.json({token});
     }
     catch(error){
-        res.status(500).json({message:"Server Error"});
+        res.status(500).json({succes:true,
+                data});
     }
 }
 module.exports={register,login};
