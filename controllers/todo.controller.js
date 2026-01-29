@@ -3,8 +3,8 @@ const Todo = require("../models/Todo");
 // CREATE TODO
 const createTodo = async (req, res) => {
   try {
-    const { title, boardId } = req.body;
-
+    const { title} = req.body;
+    const { boardId } = req.params;
     if (!title || !boardId) {
       return res.status(400).json({ message: "Title and boardId are required" });
     }

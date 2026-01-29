@@ -1,15 +1,25 @@
-const express=require("express");
-const {createTodo,
-    getTodos,
-    updateTodo,
-    deleteTodo}=require("../controllers/todo.controller");
+const express = require("express");
+const {
+  createTodo,
+  getTodos,
+  updateTodo,
+  deleteTodo,
+} = require("../controllers/todo.controller");
 
+const auth = require("../middleware/auth.middleware");
 
-    const router=express.Router();
+const router = express.Router();
 
-    router.post("/",createTodo);
-    router.get("/",getTodos);
-    router.put("/:id",updateTodo);
-    router.delete("/:id",deleteTodo);
+router.use(auth);
 
-    module.exports=router;
+// Create todo inside a board
+router.post("/:boardId", createTodo);
+
+// Get todos for a specific board
+router.get("/:boardId", getTodos);
+
+// Update & delete remain todo-specific
+router.put("/item/:id", updateTodo);
+router.delete("/item/:id", deleteTodo);
+
+module.exports = router;
