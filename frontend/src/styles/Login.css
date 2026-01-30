@@ -1,0 +1,109 @@
+/* src/pages/Login.css */
+
+/* This centers the card and ensures the background covers the whole screen */
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #1a1a1a; /* Matches the dark background in your image */
+  margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* The white card containing the form */
+.login-card {
+  background: #ffffff;
+  padding: 3rem 2.5rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 450px; /* Limits width so it doesn't stretch too far */
+  display: flex;
+  flex-direction: column;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.login-header h2 {
+  color: #1e293b;
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.login-header p {
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* Matching the dark inputs from your screenshot */
+.input-group input {
+  padding: 0.8rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  background-color: #333333; /* Dark background for input */
+  color: #ffffff;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.input-group input::placeholder {
+  color: #71717a;
+}
+
+.login-button {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  border-radius: 0.75rem;
+  border: none;
+  background-color: #5850ec; /* Vibrant purple/blue from image */
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s, background-color 0.2s;
+}
+
+.login-button:hover {
+  background-color: #4b45d1;
+}
+
+.login-button:active {
+  transform: scale(0.98);
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.login-footer a {
+  color: #5850ec;
+  text-decoration: none;
+  font-weight: 600;
+}
