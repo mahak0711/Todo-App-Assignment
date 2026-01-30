@@ -10,14 +10,17 @@ const Board = () => {
   const [title, setTitle] = useState("");
 
   const fetchTodos = async () => {
-    try {
-      const res = await getTodos(id);
-      setTodos(res.data);
-    } catch (err) {
-      console.error(err);
-      alert("Failed to fetch todos");
-    }
-  };
+  try {
+    const res = await getTodos(id);
+    // res.data = { success: true, data: [...] }
+    setTodos(Array.isArray(res.data.data) ? res.data.data : []);
+  } catch (err) {
+    console.error(err);
+    alert("Failed to fetch todos");
+  }
+};
+
+
 
   useEffect(() => {
     fetchTodos();

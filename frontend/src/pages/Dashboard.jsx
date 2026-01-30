@@ -1,13 +1,11 @@
-// src/pages/Dashboard.jsx
 import { useState, useEffect } from "react";
 import { getBoards, createBoard, deleteBoard } from "../services/api";
 import BoardCard from "../components/BoardCard";
-
+import Navbar from "../components/Navbar";
 const Dashboard = () => {
   const [boards, setBoards] = useState([]);
-  const [name, setName] = useState("");
+  const [title, setTitle] = useState(""); // <-- make sure this exists
 
-  // Fetch boards from backend
   const fetchBoards = async () => {
     try {
       const res = await getBoards();
@@ -22,12 +20,12 @@ const Dashboard = () => {
     fetchBoards();
   }, []);
 
-  // Create new board
+  // Correctly use the `title` state here
   const handleCreate = async () => {
-    if (!name.trim()) return alert("Board name cannot be empty");
+    if (!title.trim()) return alert("Board title cannot be empty");
     try {
-      await createBoard({ name });
-      setName("");
+      await createBoard({ title }); // <-- send { title } to backend
+      setTitle(""); // clear input
       fetchBoards(); // refresh list
     } catch (err) {
       console.error(err);
@@ -35,9 +33,8 @@ const Dashboard = () => {
     }
   };
 
-  // Delete board
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this board?")) return;
+    if (!window.confirm("Delete this board?")) return;
     try {
       await deleteBoard(id);
       fetchBoards();
@@ -48,28 +45,36 @@ const Dashboard = () => {
   };
 
   return (
-    <div style={{ padding: "30px" }}>
+    <>
+    <Navbar />
+    <div style={{ padding: "30px", maxWidth: "600px", margin: "auto" }}>
       <h2>Your Boards</h2>
-      <div style={{ margin: "20px 0" }}>
+      <div style={{ marginBottom: "20px" }}>
         <input
           type="text"
-          placeholder="New Board Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={{ padding: "10px", marginRight: "10px", width: "250px" }}
+          placeholder="New Board Title"
+          value={title} // <-- must match useState
+          onChange={(e) => setTitle(e.target.value)}
+          style={{ padding: "10px", marginRight: "10px", width: "70%" }}
         />
-        <button onClick={handleCreate} style={{ padding: "10px 20px" }}>Create Board</button>
+        <button onClick={handleCreate} style={{ padding: "10px 15px" }}>
+          Create Board
+        </button>
       </div>
-      <div>
-        {boards.length === 0 ? (
-          <p>No boards available. Create one!</p>
-        ) : (
-          boards.map((board) => (
-            <BoardCard key={board._id} board={board} onDelete={handleDelete} />
-          ))
-        )}
-      </div>
+
+      {boards.length === 0 ? (
+        <p>No boards yet. Create one!</p>
+      ) : (
+        boards.map((board) => (
+          <BoardCard
+            key={board._id}
+            board={board}
+            onDelete={handleDelete}
+          />
+        ))
+      )}
     </div>
+    </>
   );
 };
 
