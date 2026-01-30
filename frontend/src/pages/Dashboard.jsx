@@ -1,18 +1,20 @@
+// src/pages/Dashboard.jsx
 import { useState, useEffect } from "react";
 import { getBoards, createBoard, deleteBoard } from "../services/api";
 import BoardCard from "../components/BoardCard";
 import Navbar from "../components/Navbar";
+import "../styles/DashBoard.css";
+
 const Dashboard = () => {
   const [boards, setBoards] = useState([]);
-  const [title, setTitle] = useState(""); // <-- make sure this exists
+  const [title, setTitle] = useState("");
 
   const fetchBoards = async () => {
     try {
       const res = await getBoards();
       setBoards(res.data);
     } catch (err) {
-      console.error(err);
-      alert("Failed to fetch boards");
+      console.error("Fetch Error:", err);
     }
   };
 
@@ -20,16 +22,22 @@ const Dashboard = () => {
     fetchBoards();
   }, []);
 
-  // Correctly use the `title` state here
-  const handleCreate = async () => {
-    if (!title.trim()) return alert("Board title cannot be empty");
+  const handleCreate = async (e) => {
+    // 1. Prevent the page from refreshing
+    e.preventDefault();
+    
+    if (!title.trim()) return;
+
     try {
-      await createBoard({ title }); // <-- send { title } to backend
-      setTitle(""); // clear input
-      fetchBoards(); // refresh list
+      // 2. Add a log to see if this is actually running
+      console.log("Creating board with title:", title);
+      
+      await createBoard({ title });
+      setTitle(""); // Clear input
+      fetchBoards(); // Refresh the list
     } catch (err) {
-      console.error(err);
-      alert("Failed to create board");
+      console.error("Create Error:", err);
+      alert("Could not create board. Is the backend running?");
     }
   };
 
@@ -39,42 +47,53 @@ const Dashboard = () => {
       await deleteBoard(id);
       fetchBoards();
     } catch (err) {
-      console.error(err);
-      alert("Failed to delete board");
+      console.error("Delete Error:", err);
     }
   };
 
   return (
-    <>
-    <Navbar />
-    <div style={{ padding: "30px", maxWidth: "600px", margin: "auto" }}>
-      <h2>Your Boards</h2>
-      <div style={{ marginBottom: "20px" }}>
-        <input
-          type="text"
-          placeholder="New Board Title"
-          value={title} // <-- must match useState
-          onChange={(e) => setTitle(e.target.value)}
-          style={{ padding: "10px", marginRight: "10px", width: "70%" }}
-        />
-        <button onClick={handleCreate} style={{ padding: "10px 15px" }}>
-          Create Board
-        </button>
-      </div>
+    <div className="dashboard-wrapper">
+      <Navbar />
+      <main className="dashboard-content">
+        <header className="dashboard-header">
+          <div className="header-text">
+            <h1>Workspace</h1>
+            <p>Manage your projects and tasks</p>
+          </div>
+          
+          {/* Use a form to ensure the button triggers correctly */}
+          <form className="create-board-box" onSubmit={handleCreate}>
+            <input
+              type="text"
+              placeholder="Enter board title..."
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="dashboard-input"
+              required
+            />
+            <button type="submit" className="create-btn">
+              + New Board
+            </button>
+          </form>
+        </header>
 
-      {boards.length === 0 ? (
-        <p>No boards yet. Create one!</p>
-      ) : (
-        boards.map((board) => (
-          <BoardCard
-            key={board._id}
-            board={board}
-            onDelete={handleDelete}
-          />
-        ))
-      )}
+        <section className="boards-grid">
+          {boards.length === 0 ? (
+            <div className="empty-state">
+              <p>No boards found. Start by creating one above!</p>
+            </div>
+          ) : (
+            boards.map((board) => (
+              <BoardCard
+                key={board._id}
+                board={board}
+                onDelete={handleDelete}
+              />
+            ))
+          )}
+        </section>
+      </main>
     </div>
-    </>
   );
 };
 
