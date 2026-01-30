@@ -1,40 +1,39 @@
 // frontend/src/pages/Board.jsx
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getTodos, createTodo, updateTodo, deleteTodo } from "../services/api";
 import TodoItem from "../components/TodoItem";
+import Navbar from "../components/Navbar";
+import "../styles/Board.css";
 
 const Board = () => {
-  const { id } = useParams(); // board id
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState("");
 
   const fetchTodos = async () => {
-  try {
-    const res = await getTodos(id);
-    // res.data = { success: true, data: [...] }
-    setTodos(Array.isArray(res.data.data) ? res.data.data : []);
-  } catch (err) {
-    console.error(err);
-    alert("Failed to fetch todos");
-  }
-};
-
-
+    try {
+      const res = await getTodos(id);
+      setTodos(Array.isArray(res.data.data) ? res.data.data : []);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     fetchTodos();
   }, [id]);
 
-  const handleCreate = async () => {
-    if (!title.trim()) return alert("Todo title cannot be empty");
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    if (!title.trim()) return;
     try {
       await createTodo(id, { title });
       setTitle("");
       fetchTodos();
     } catch (err) {
       console.error(err);
-      alert("Failed to create todo");
     }
   };
 
@@ -44,7 +43,6 @@ const Board = () => {
       fetchTodos();
     } catch (err) {
       console.error(err);
-      alert("Failed to update todo");
     }
   };
 
@@ -55,37 +53,51 @@ const Board = () => {
       fetchTodos();
     } catch (err) {
       console.error(err);
-      alert("Failed to delete todo");
     }
   };
 
   return (
-    <div style={{ padding: "30px", maxWidth: "500px", margin: "auto" }}>
-      <h2>Board Todos</h2>
-      <div style={{ marginBottom: "20px" }}>
-        <input
-          type="text"
-          placeholder="New Todo Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          style={{ padding: "10px", marginRight: "10px", width: "70%" }}
-        />
-        <button onClick={handleCreate} style={{ padding: "10px 15px" }}>Add Todo</button>
-      </div>
-      <div>
-        {todos.length === 0 ? (
-          <p>No todos yet. Add one!</p>
-        ) : (
-          todos.map((todo) => (
-            <TodoItem
-              key={todo._id}
-              todo={todo}
-              onUpdate={handleUpdate}
-              onDelete={handleDelete}
+    <div className="board-page-wrapper">
+      <Navbar />
+      <main className="board-container">
+        <header className="board-header">
+          <button className="back-btn" onClick={() => navigate("/dashboard")}>
+            ← Back to Workspace
+          </button>
+          <h2>Board Tasks</h2>
+        </header>
+
+        <section className="todo-input-section">
+          <form className="todo-form" onSubmit={handleCreate}>
+            <input
+              type="text"
+              placeholder="What needs to be done?"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="todo-input"
+              required
             />
-          ))
-        )}
-      </div>
+            <button type="submit" className="todo-add-btn">Add Task</button>
+          </form>
+        </section>
+
+        <div className="todo-list">
+          {todos.length === 0 ? (
+            <div className="empty-todo-state">
+              <p>Your task list is empty. Start adding some!</p>
+            </div>
+          ) : (
+            todos.map((todo) => (
+              <TodoItem
+                key={todo._id}
+                todo={todo}
+                onUpdate={handleUpdate}
+                onDelete={handleDelete}
+              />
+            ))
+          )}
+        </div>
+      </main>
     </div>
   );
 };
